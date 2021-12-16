@@ -72,16 +72,26 @@ tasks.build.dependsOn tasks.shadowJar
 
 publishing {
     publications {
-        shadow(MavenPublication) { publication ->
+        mavenJava(MavenPublication) { publication ->
             project.shadow.component(publication)
+			artifact sourcesJar
+			artifact javadocJar
             pom {
                 groupId = 'net.gredler'
                 name = 'aegis4j'
                 url = 'https://github.com/gredler/aegis4j'
+                description = 'A Java agent which disables dangerous rarely-used runtime features.'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
                         url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'gredler'
+                        name = 'Daniel Gredler'
+                        email = 'daniel.gredler@gmail.com'
                     }
                 }
                 scm {
@@ -104,5 +114,5 @@ publishing {
 }
 
 signing {
-    sign publishing.publications.shadow
+    sign publishing.publications.mavenJava
 }
