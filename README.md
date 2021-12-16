@@ -1,6 +1,6 @@
 # aegis4j
 
-Avoid the next Log4Shell vulnerability!
+Avoid the NEXT Log4Shell vulnerability!
 
 The Java platform has accrued a number of features over the years. Some of these features are no longer commonly used,
 but their existence remains a security liability, providing attackers with a diverse toolkit to leverage against
@@ -9,11 +9,15 @@ Java-based systems.
 It is possible to eliminate some of this attack surface area by creating custom JVM images with
 [jlink](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jlink.html), but this is not always feasible or desired.
 Another option is to use the [--limit-modules](https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html) command
-line parameter when running your application, but this is a relatively coarse tool that may not play nicely with your
-application.
+line parameter when running your application, but this is a relatively coarse tool that cannot be used to disable
+individual features like serialization or native process execution.
 
 A third option is aegis4j, a Java agent which patches key system classes to completely disable a number of standard
 Java features, including JNDI, RMI, process execution, Java serialization and the built-in JDK HTTP server.
+
+### Download
+
+The aegis4j JAR is available in the [Maven Central](https://repo1.maven.org/maven2/net/gredler/aegis4j/1.0/) repository.
 
 ### Usage: Attach at Application Startup
 
@@ -70,6 +74,9 @@ agent against actual vulnerabilities (e.g.
 [CVE-2015-7501](src/test/java/net/gredler/aegis4j/CVE_2015_7501.java),
 [CVE-2019-17531](src/test/java/net/gredler/aegis4j/CVE_2019_17531.java),
 [CVE-2021-44228](src/test/java/net/gredler/aegis4j/CVE_2021_44228.java)).
+The tests are run with the `jdk.attach.allowAttachSelf=true` system property, so that the agent can be attached and tested
+locally. Tests are also run in individual VM instances, so that the class modifications performed in one test do not affect other
+tests.
 
 ### Related Work
 

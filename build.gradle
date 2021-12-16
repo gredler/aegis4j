@@ -46,7 +46,7 @@ java {
 test {
     useJUnitPlatform()
     systemProperty 'jdk.attach.allowAttachSelf', 'true'
-    forkEvery 1 // tests cannot detach agent to clean up after themselves
+    forkEvery 1 // tests cannot undo class modifications to clean up after themselves
 }
 
 jar {
