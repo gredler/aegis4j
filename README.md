@@ -41,7 +41,7 @@ You can optionally provide a list of features to block or unblock from the follo
 - `rmi`: block or unblock all RMI functionality (`java.rmi.*`)
 - `process`: block or unblock all process execution functionality (`Runtime.exec()` and `ProcessBuilder`)
 - `httpserver`: block or unblock all use of the JDK HTTP server (`com.sun.net.httpserver.*`)
-- `serialization`: block or unblock all Java serialization (`ObjectInputStream`, `ObjectOutputStream`)
+- `serialization`: block or unblock all Java serialization (`ObjectInputStream` and `ObjectOutputStream`)
 
 If no feature list is provided, all of the features above are blocked across the entire VM, for example:
 
