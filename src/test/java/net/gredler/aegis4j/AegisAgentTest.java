@@ -14,8 +14,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.rmi.StubNotFoundException;
-import java.rmi.activation.ActivationGroup;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 import java.util.Set;
 
@@ -97,13 +98,18 @@ public class AegisAgentTest {
 
     @Test
     public void testRmi() throws Exception {
-        assertThrowsSNFE(() -> LocateRegistry.getRegistry(9090));
-        assertThrowsSNFE(() -> LocateRegistry.getRegistry("foo"));
-        assertThrowsSNFE(() -> LocateRegistry.getRegistry("foo", 9090));
-        assertThrowsSNFE(() -> LocateRegistry.getRegistry("foo", 9090, null));
-        assertThrowsSNFE(() -> LocateRegistry.createRegistry(9090));
-        assertThrowsSNFE(() -> LocateRegistry.createRegistry(9090, null, null));
-        assertThrowsSNFE(() -> ActivationGroup.getSystem());
+
+        int integer = 9090;
+        String string = "foo";
+        RMIClientSocketFactory clientSocketFactory = null;
+        RMIServerSocketFactory serverSocketFactory = null;
+
+        assertThrowsSNFE(() -> LocateRegistry.getRegistry(integer));
+        assertThrowsSNFE(() -> LocateRegistry.getRegistry(string));
+        assertThrowsSNFE(() -> LocateRegistry.getRegistry(string, integer));
+        assertThrowsSNFE(() -> LocateRegistry.getRegistry(string, integer, clientSocketFactory));
+        assertThrowsSNFE(() -> LocateRegistry.createRegistry(integer));
+        assertThrowsSNFE(() -> LocateRegistry.createRegistry(integer, clientSocketFactory, serverSocketFactory));
     }
 
     @Test
