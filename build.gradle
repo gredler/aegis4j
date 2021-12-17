@@ -47,6 +47,12 @@ test {
     useJUnitPlatform()
     systemProperty 'jdk.attach.allowAttachSelf', 'true'
     forkEvery 1 // tests cannot undo class modifications to clean up after themselves
+    testLogging {
+    	events 'passed', 'skipped', 'failed'
+    	showExceptions true
+    	showStackTraces true
+    	exceptionFormat 'full'
+    }
 }
 
 jar {
