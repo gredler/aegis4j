@@ -23,4 +23,4 @@ jobs:
     - name: Build with Gradle
       run: |
         cd $GITHUB_WORKSPACE
-        ./gradlew build
+        ./gradlew build --stacktrace
