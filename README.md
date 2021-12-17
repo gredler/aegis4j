@@ -13,7 +13,7 @@ line parameter when running your application, but this is a relatively coarse to
 individual features like serialization or native process execution.
 
 A third option is aegis4j, a Java agent which patches key system classes to completely disable a number of standard
-Java features, including JNDI, RMI, process execution, Java serialization and the built-in JDK HTTP server.
+Java features, including JNDI, RMI, native process execution, Java serialization and the built-in JDK HTTP server.
 
 ### Download
 
@@ -39,9 +39,9 @@ You can optionally provide a list of features to block or unblock from the follo
 
 - `jndi`: block or unblock all JNDI functionality (`javax.naming.*`)
 - `rmi`: block or unblock all RMI functionality (`java.rmi.*`)
-- `process`: block or unblock all process execution functionality (`Runtime.exec()` and `ProcessBuilder`)
+- `process`: block or unblock all process execution functionality (`Runtime.exec()`, `ProcessBuilder`)
 - `httpserver`: block or unblock all use of the JDK HTTP server (`com.sun.net.httpserver.*`)
-- `serialization`: block or unblock all Java serialization (`ObjectInputStream` and `ObjectOutputStream`)
+- `serialization`: block or unblock all Java serialization (`ObjectInputStream`, `ObjectOutputStream`)
 
 If no feature list is provided, all of the features above are blocked across the entire VM, for example:
 
