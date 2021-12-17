@@ -41,7 +41,10 @@ public class CVE_2015_7501 {
 
         Path temp = Files.createTempFile("aegis4j-", ".tmp");
         temp.toFile().deleteOnExit();
-        String cmd = "cmd.exe /c echo " + OWNED + ">" + temp.toAbsolutePath().toString(); // windows only
+
+        boolean windows = System.getProperty("os.name").toLowerCase().contains("windows");
+        String cmd = windows ? "cmd.exe /c echo " + OWNED + ">" + temp.toAbsolutePath().toString()
+                             : "echo " + OWNED + " > " + temp.toAbsolutePath().toString();
 
         Transformer transformerChain = new ChainedTransformer(new Transformer[] {
             new ConstantTransformer(Runtime.class),
