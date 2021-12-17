@@ -33,10 +33,21 @@ public final class Patcher implements ClassFileTransformer {
 
     private final Map< String, List< Modification > > modifications;
 
+    /**
+     * Creates a new class patcher which blocks the specified features.
+     *
+     * @param block the features to block
+     */
     public Patcher(Set< String > block) {
         modifications = loadModifications(block);
     }
 
+    /**
+     * Registers a new patcher on the specified instrumentation instance and triggers class transformation.
+     *
+     * @param instr the instrumentation instance to add a new patcher to
+     * @param block the features to block
+     */
     public static void start(Instrumentation instr, Set< String > block) {
 
         Patcher patcher = new Patcher(block);
