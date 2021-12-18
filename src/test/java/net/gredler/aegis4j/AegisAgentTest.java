@@ -175,7 +175,6 @@ public class AegisAgentTest {
         assertThrowsRE(() -> unsafe.compareAndSwapObject(null, 0, null, null), msg);
         assertThrowsRE(() -> unsafe.copyMemory(0, 0, 0), msg);
         assertThrowsRE(() -> unsafe.copyMemory(null, 0, null, 0, 0), msg);
-        assertThrowsRE(() -> unsafe.defineAnonymousClass(null, null, null), msg);
         assertThrowsRE(() -> unsafe.ensureClassInitialized(null), msg);
         assertThrowsRE(() -> unsafe.freeMemory(0), msg);
         assertThrowsRE(() -> unsafe.fullFence(), msg);
