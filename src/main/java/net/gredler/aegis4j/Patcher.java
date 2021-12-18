@@ -93,7 +93,8 @@ public final class Patcher implements ClassFileTransformer {
                         constructor.setBody(mod.newBody);
                     }
                 } else {
-                    for (CtMethod method : clazz.getDeclaredMethods(mod.methodName)) {
+                    CtMethod[] methods = mod.isAll() ? clazz.getDeclaredMethods() : clazz.getDeclaredMethods(mod.methodName);
+                    for (CtMethod method : methods) {
                         method.setBody(mod.newBody);
                     }
                 }
@@ -147,6 +148,10 @@ public final class Patcher implements ClassFileTransformer {
 
         public boolean isConstructor() {
             return className.substring(className.lastIndexOf('.') + 1).equals(methodName);
+        }
+
+        public boolean isAll() {
+            return "*".equals(methodName);
         }
     }
 }

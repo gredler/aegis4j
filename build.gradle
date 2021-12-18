@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation 'org.javassist:javassist:3.28.0-GA'
+    testImplementation 'org.springframework:spring-core:5.3.14'
     testImplementation 'com.unboundid:unboundid-ldapsdk:3.1.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -51,6 +52,7 @@ test {
     	events 'passed', 'skipped', 'failed'
     	showExceptions true
     	showStackTraces true
+    	showStandardStreams false
     	exceptionFormat 'full'
     }
 }

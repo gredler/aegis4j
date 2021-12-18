@@ -76,7 +76,7 @@ public final class AegisAgent {
      */
     protected static Set< String > toBlockList(String args) {
 
-        Set< String > all = Set.of("jndi", "rmi", "process", "httpserver", "serialization");
+        Set< String > all = Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe");
         if (args == null || args.isBlank()) {
             // no arguments provided by user
             return all;
