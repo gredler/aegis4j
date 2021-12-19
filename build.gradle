@@ -49,11 +49,11 @@ test {
     systemProperty 'jdk.attach.allowAttachSelf', 'true'
     forkEvery 1 // tests cannot undo class modifications to clean up after themselves
     testLogging {
-    	events 'passed', 'skipped', 'failed'
-    	showExceptions true
-    	showStackTraces true
-    	showStandardStreams false
-    	exceptionFormat 'full'
+        events 'passed', 'skipped', 'failed'
+        showExceptions true
+        showStackTraces true
+        showStandardStreams false
+        exceptionFormat 'full'
     }
 }
 
@@ -82,8 +82,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) { publication ->
             project.shadow.component(publication)
-			artifact sourcesJar
-			artifact javadocJar
+            artifact sourcesJar
+            artifact javadocJar
             pom {
                 groupId = 'net.gredler'
                 name = 'aegis4j'
