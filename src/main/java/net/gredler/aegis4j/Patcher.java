@@ -84,6 +84,7 @@ public final class Patcher implements ClassFileTransformer {
         ClassPool pool = new ClassPool();
         pool.appendClassPath(new ByteArrayClassPath(className, classBytes));
         pool.appendClassPath(new LoaderClassPath(ClassLoader.getPlatformClassLoader()));
+        pool.appendClassPath(new LoaderClassPath(getClass().getClassLoader()));
 
         try {
             CtClass clazz = pool.get(className);
@@ -94,6 +95,9 @@ public final class Patcher implements ClassFileTransformer {
                     }
                 } else {
                     CtMethod[] methods = mod.isAll() ? clazz.getDeclaredMethods() : clazz.getDeclaredMethods(mod.methodName);
+                    if (methods.length == 0) {
+                        System.err.println("ERROR: Method not found: " + className + "." + mod.methodName);
+                    }
                     for (CtMethod method : methods) {
                         method.setBody(mod.newBody);
                     }

@@ -39,6 +39,8 @@ import org.springframework.objenesis.SpringObjenesis;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
+import jdk.jshell.JShell;
+import jdk.jshell.tool.JavaShellToolBuilder;
 import sun.misc.Unsafe;
 
 /**
@@ -53,17 +55,17 @@ public class AegisAgentTest {
 
     @Test
     public void testParseBlockList() {
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList(""));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("   "));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("blahblah"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("foo=bar"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("unblock=incorrect"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization,process"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("UNbloCk=SERIALIZATION,Process"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList(" unblock\t=    serialization      , process\t"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization,process,incorrect1,incorrect2"));
-        assertEquals(Set.of(), toBlockList("unblock=jndi,rmi,process,httpserver,serialization,unsafe,scripting"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList(""));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("   "));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("blahblah"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("foo=bar"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("unblock=incorrect"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization,process"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("UNbloCk=SERIALIZATION,Process"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList(" unblock\t=    serialization      , process\t"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization,process,incorrect1,incorrect2"));
+        assertEquals(Set.of(), toBlockList("unblock=jndi,rmi,process,httpserver,serialization,unsafe,scripting,jshell"));
         assertEquals(Set.of("jndi"), toBlockList("block=jndi"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block=jndi,rmi,process"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block = jndi\t, rmi ,\nprocess"));
@@ -148,6 +150,13 @@ public class AegisAgentTest {
         assertThrowsRE(() -> HttpServer.create(), "HTTP server provider lookup blocked by aegis4j");
         assertThrowsRE(() -> HttpServer.create(null, 0), "HTTP server provider lookup blocked by aegis4j");
         assertThrowsRE(() -> HttpServerProvider.provider(), "HTTP server provider lookup blocked by aegis4j");
+    }
+
+    @Test
+    public void testJShell() {
+        assertThrowsRE(() -> JShell.builder(), "JShell blocked by aegis4j");
+        assertThrowsRE(() -> JShell.create(), "JShell blocked by aegis4j");
+        assertThrowsRE(() -> JavaShellToolBuilder.builder(), "JShell blocked by aegis4j");
     }
 
     @Test

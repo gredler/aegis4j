@@ -22,6 +22,7 @@ Java features:
 - `serialization`: all Java serialization (`ObjectInputStream`, `ObjectOutputStream`)
 - `unsafe`: all use of `sun.misc.Unsafe`
 - `scripting`: all JSR 223 scripting (`javax.script.*`)
+- `jshell`: all use of the Java Shell API (`jdk.jshell.*`)
 
 ### Download
 
