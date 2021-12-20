@@ -5,7 +5,7 @@ package net.gredler.aegis4j;
 import static net.gredler.aegis4j.AegisAgent.toBlockList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +26,11 @@ import javax.naming.InitialContext;
 import javax.naming.Name;
 import javax.naming.NoInitialContextException;
 import javax.naming.ldap.LdapName;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.SimpleScriptContext;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,18 +52,18 @@ public class AegisAgentTest {
     }
 
     @Test
-    public void testParseBlockList() throws Exception {
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe"), toBlockList(""));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe"), toBlockList("   "));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe"), toBlockList("blahblah"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe"), toBlockList("foo=bar"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe"), toBlockList("unblock=incorrect"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "unsafe"), toBlockList("unblock=serialization"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe"), toBlockList("unblock=serialization,process"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe"), toBlockList("UNbloCk=SERIALIZATION,Process"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe"), toBlockList(" unblock\t=    serialization      , process\t"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe"), toBlockList("unblock=serialization,process,incorrect1,incorrect2"));
-        assertEquals(Set.of(), toBlockList("unblock=jndi,rmi,process,httpserver,serialization,unsafe"));
+    public void testParseBlockList() {
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList(""));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("   "));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("blahblah"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("foo=bar"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting"), toBlockList("unblock=incorrect"));
+        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization,process"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("UNbloCk=SERIALIZATION,Process"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList(" unblock\t=    serialization      , process\t"));
+        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting"), toBlockList("unblock=serialization,process,incorrect1,incorrect2"));
+        assertEquals(Set.of(), toBlockList("unblock=jndi,rmi,process,httpserver,serialization,unsafe,scripting"));
         assertEquals(Set.of("jndi"), toBlockList("block=jndi"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block=jndi,rmi,process"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block = jndi\t, rmi ,\nprocess"));
@@ -102,7 +107,7 @@ public class AegisAgentTest {
     }
 
     @Test
-    public void testRmi() throws Exception {
+    public void testRmi() {
 
         int integer = 9090;
         String string = "foo";
@@ -118,7 +123,7 @@ public class AegisAgentTest {
     }
 
     @Test
-    public void testProcess() throws Exception {
+    public void testProcess() {
 
         Runtime runtime = Runtime.getRuntime();
         String string = "foo";
@@ -139,14 +144,25 @@ public class AegisAgentTest {
     }
 
     @Test
-    public void testHttpServer() throws Exception {
+    public void testHttpServer() {
         assertThrowsRE(() -> HttpServer.create(), "HTTP server provider lookup blocked by aegis4j");
         assertThrowsRE(() -> HttpServer.create(null, 0), "HTTP server provider lookup blocked by aegis4j");
         assertThrowsRE(() -> HttpServerProvider.provider(), "HTTP server provider lookup blocked by aegis4j");
     }
 
     @Test
-    public void testSerialization() throws Exception {
+    public void testScripting() {
+        assertThrowsRE(() -> new ScriptEngineManager(), "Scripting blocked by aegis4j");
+        assertThrowsRE(() -> new ScriptEngineManager(getClass().getClassLoader()), "Scripting blocked by aegis4j");
+        assertThrowsRE(() -> new SimpleScriptContext(), "Scripting blocked by aegis4j");
+        assertThrowsRE(() -> new CompiledScript() {
+            @Override public Object eval(ScriptContext context) { return null; }
+            @Override public ScriptEngine getEngine() { return null; }
+        }, "Scripting blocked by aegis4j");
+    }
+
+    @Test
+    public void testSerialization() {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(new byte[0]);
         assertThrowsRE(() -> new ObjectInputStream(bais), "Java deserialization blocked by aegis4j");
@@ -261,35 +277,36 @@ public class AegisAgentTest {
         assertInstanceOf(LocalDate.class, so.newInstance(LocalDate.class));
     }
 
-    private static void assertThrowsNICE(Task task) throws Exception {
+    private static void assertThrowsNICE(Task task) {
         assertThrows(task, NoInitialContextException.class, "JNDI context creation blocked by aegis4j");
     }
 
-    private static void assertThrowsSNFE(Task task) throws Exception {
+    private static void assertThrowsSNFE(Task task) {
         assertThrows(task, StubNotFoundException.class, "RMI registry creation blocked by aegis4j");
     }
 
-    private static void assertThrowsIOE(Task task) throws Exception {
+    private static void assertThrowsIOE(Task task) {
         assertThrows(task, IOException.class, "Process execution blocked by aegis4j");
     }
 
-    private static void assertThrowsRE(Task task, String msg) throws Exception {
+    private static void assertThrowsRE(Task task, String msg) {
         assertThrows(task, RuntimeException.class, msg);
     }
 
-    private static void assertThrows(Task task, Class< ? extends Exception > exceptionType, String msg) throws Exception {
+    private static void assertThrows(Task task, Class< ? extends Throwable > type, String msg) {
+        Throwable root;
         try {
             task.run();
-            fail("Exception expected");
-        } catch (Exception e) {
-            Throwable root = getRootCause(e);
-            assertInstanceOf(exceptionType, root);
-            assertEquals(msg, root.getMessage());
+            root = null;
+        } catch (Throwable t) {
+            root = getRootCause(t);
         }
+        assertNotNull(root, "No exception thrown");
+        assertInstanceOf(type, root, "Exception is wrong type");
+        assertEquals(msg, root.getMessage(), "Exception has wrong message");
     }
 
-    private static Throwable getRootCause(Exception e) {
-        Throwable t = e;
+    private static Throwable getRootCause(Throwable t) {
         while (t.getCause() != null) {
             t = t.getCause();
         }

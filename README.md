@@ -21,6 +21,7 @@ Java features:
 - `httpserver`: all use of the JDK HTTP server (`com.sun.net.httpserver.*`)
 - `serialization`: all Java serialization (`ObjectInputStream`, `ObjectOutputStream`)
 - `unsafe`: all use of `sun.misc.Unsafe`
+- `scripting`: all JSR 223 scripting (`javax.script.*`)
 
 ### Download
 
