@@ -12,7 +12,7 @@ Another option is to use the [--limit-modules](https://docs.oracle.com/en/java/j
 line parameter when running your application, but this is a relatively coarse tool that cannot be used to disable
 individual features like serialization or native process execution.
 
-A third option is aegis4j, a Java agent which patches key system classes to completely disable a number of standard
+A third option is aegis4j, a Java agent which can patch key system classes to completely disable a number of standard
 Java features:
 
 - `jndi`: all JNDI functionality (`javax.naming.*`)
@@ -88,14 +88,26 @@ including the JDK lambda internals, Spring Boot, JUnit, and many other libraries
 
 ### Related Work
 
-[log4j-jndi-be-gone](https://github.com/nccgroup/log4j-jndi-be-gone): A Java agent which patches the Log4Shell vulnerability (CVE-2021-44228).
+[log4j-jndi-be-gone](https://github.com/nccgroup/log4j-jndi-be-gone):
+A Java agent which patches the Log4Shell vulnerability (CVE-2021-44228).
 
-[Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2/): A similar Java agent from the Amazon Corretto team.
+[Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2/):
+A similar Java agent from the Amazon Corretto team.
 
-[Logout4Shell](https://github.com/Cybereason/Logout4Shell): Vaccine exploit which leverages the Log4Shell vulnerability to patch the Log4Shell vulnerability.
+[Logout4Shell](https://github.com/Cybereason/Logout4Shell):
+Vaccine exploit which leverages the Log4Shell vulnerability to patch the Log4Shell vulnerability.
 
-[Logpresso log4j2-scan](https://github.com/logpresso/CVE-2021-44228-Scanner): Command line tool for scanning (and patching) JAR files for Log4Shell vulnerabilities.
+[Logpresso log4j2-scan](https://github.com/logpresso/CVE-2021-44228-Scanner):
+Command line tool for scanning (and patching) JAR files for Log4Shell vulnerabilities.
 
-[ysoserial](https://github.com/frohoff/ysoserial): A proof-of-concept tool for generating Java serialization vulnerability payloads.
+[ysoserial](https://github.com/frohoff/ysoserial):
+A proof-of-concept tool for generating Java serialization vulnerability payloads.
 
-[NotSoSerial](https://github.com/kantega/notsoserial): A Java agent which attempts to mitigate serialization vulnerabilities by selectively blocking serialization attempts.
+[NotSoSerial](https://github.com/kantega/notsoserial):
+A Java agent which attempts to mitigate serialization vulnerabilities by selectively blocking serialization attempts.
+
+[An In-Depth Study of More Than Ten Years of Java Exploitation](https://www.abartel.net/static/p/ccs2016-10yearsJavaExploits.pdf):
+Study of real-world Java exploits between 2003 and 2013 ([citations](https://scholar.google.com/scholar?cites=17190152291480177134)).
+
+[A Systematic Analysis and Hardening of the Java Security Architecture](https://www.bodden.de/pubs/phdHolzinger.pdf):
+PhD thesis which incorporates the above research and proposes specific hardening measures.
