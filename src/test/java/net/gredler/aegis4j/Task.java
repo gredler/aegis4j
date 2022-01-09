@@ -1,4 +1,4 @@
-/* Copyright (c) 2021, Daniel Gredler. All rights reserved. */
+/* Copyright (c) 2022, Daniel Gredler. All rights reserved. */
 
 package net.gredler.aegis4j;
 
