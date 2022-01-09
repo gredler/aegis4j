@@ -66,6 +66,14 @@ The application process ID, or PID, can usually be determined by running the `jp
 
 The aegis4j Java agent is compatible with JDK 11 and newer.
 
+### Monitoring
+
+The list of Java features blocked by aegis4j is available via the `aegis4j.blocked.features` system property, which
+can be queried at runtime via Java code, JMX, APM agents, etc.
+
+When an attempt is made to use a blocked feature, the type of exception thrown varies according to context, but the exception
+message always uses the format `"<feature> blocked by aegis4j"`.
+
 ### Building
 
 To build aegis4j, run `gradlew build`.

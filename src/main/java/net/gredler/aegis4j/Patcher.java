@@ -31,7 +31,7 @@ import javassist.NotFoundException;
  */
 public final class Patcher implements ClassFileTransformer {
 
-    private final Map< String, List< Modification > > modifications;
+    private final Map< String, List< Modification > > modifications; // class name -> modifications
 
     /**
      * Creates a new class patcher which blocks the specified features.
@@ -62,6 +62,8 @@ public final class Patcher implements ClassFileTransformer {
                 e.printStackTrace();
             }
         }
+
+        System.setProperty("aegis4j.blocked.features", String.join(",", block));
     }
 
     @Override

@@ -50,7 +50,7 @@ public class AegisAgentTest {
 
     @BeforeAll
     public static void installAgent() throws Exception {
-        TestUtils.installAgent();
+        TestUtils.installAgent(null);
     }
 
     @Test

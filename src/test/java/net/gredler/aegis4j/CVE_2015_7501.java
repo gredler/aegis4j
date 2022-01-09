@@ -77,7 +77,7 @@ public class CVE_2015_7501 {
         assertEquals("", Files.readString(temp), path);
 
         // install aegis4j agent
-        installAgent();
+        installAgent(null);
 
         // trigger again directly, verify not owned
         try {

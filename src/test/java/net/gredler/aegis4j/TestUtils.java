@@ -47,7 +47,7 @@ public final class TestUtils {
         System.clearProperty(OWNED);
         assertNull(System.getProperty(OWNED));
 
-        installAgent();
+        installAgent(null);
 
         try {
             trigger.run();
@@ -120,10 +120,10 @@ public final class TestUtils {
     /**
      * Requires {@code -Djdk.attach.allowAttachSelf=true} on the command line.
      */
-    public static void installAgent() throws Exception {
+    public static void installAgent(String options) throws Exception {
         long pid = ProcessHandle.current().pid();
         VirtualMachine jvm = VirtualMachine.attach(String.valueOf(pid));
-        jvm.loadAgent(createAgentJar(AegisAgent.class));
+        jvm.loadAgent(createAgentJar(AegisAgent.class), options);
         jvm.detach();
     }
 }
