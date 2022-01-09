@@ -13,7 +13,10 @@ import java.util.stream.Collectors;
 import com.sun.tools.attach.VirtualMachine;
 
 /**
- * The main agent class.
+ * The main agent class. This class fails fast on any configuration errors, so that e.g. a typo
+ * which prevents a feature from blocking correctly does not create a false sense of security.
+ * Once the hand-off to {@link Patcher} has occurred and the class patching has begun, errors are
+ * handled more leniently.
  *
  * @see <a href="https://www.baeldung.com/java-instrumentation">Java instrumentation primer</a>
  * @see <a href="https://github.com/nccgroup/log4j-jndi-be-gone">Alternate Java agent project</a>
@@ -29,13 +32,11 @@ public final class AegisAgent {
     public static void main(String[] args) throws Exception {
 
         if (args.length < 1) {
-            System.err.println("ERROR: Missing required argument: pid");
-            return;
+            throw new IllegalArgumentException("ERROR: Missing required argument: pid");
         }
 
         if (args.length > 2) {
-            System.err.println("ERROR: Too many arguments provided");
-            return;
+            throw new IllegalArgumentException("ERROR: Too many arguments provided");
         }
 
         String pid = args[0];
@@ -86,8 +87,7 @@ public final class AegisAgent {
         int eq = args.indexOf('=');
         if (eq == -1) {
             // incorrect argument format, we expect a single "name=value" parameter
-            System.err.println("ERROR: Invalid agent configuration string");
-            return all;
+            throw new IllegalArgumentException("ERROR: Invalid agent configuration string");
         }
 
         String name = args.substring(0, eq).trim();
@@ -104,17 +104,31 @@ public final class AegisAgent {
             return Collections.unmodifiableSet(block);
         } else {
             // no idea what the user is doing...
-            System.err.println("ERROR: Unrecognized parameter name: " + name + "; should be one of 'block' or 'unblock'");
-            return all;
+            throw new IllegalArgumentException("ERROR: Unrecognized parameter name (should be one of 'block' or 'unblock'): " + name);
         }
     }
 
-    private static Set< String > split(String values, Set<String> all) {
-        return Arrays.asList(values.split(","))
-                     .stream()
-                     .map(s -> s.trim())
-                     .peek(s -> { if(!all.contains(s)) System.err.println("ERROR: Unrecognized feature name: " + s); })
-                     .filter(all::contains)
-                     .collect(Collectors.toUnmodifiableSet());
+    /**
+     * Splits the specified comma-delimited feature list, validating that all specified features are valid.
+     *
+     * @param values the comma-delimited feature list
+     * @param all the list of valid features to validate against
+     * @return the feature list, split into individual (validated) feature names
+     * @throws IllegalArgumentException if any unrecognized feature names are included in the comma-delimited feature list
+     */
+    private static Set< String > split(String values, Set< String > all) {
+
+        Set< String > features = Arrays.asList(values.split(","))
+                                       .stream()
+                                       .map(String::trim)
+                                       .collect(Collectors.toUnmodifiableSet());
+
+        for (String feature : features) {
+            if (!all.contains(feature)) {
+                throw new IllegalArgumentException("ERROR: Unrecognized feature name: " + feature);
+            }
+        }
+
+        return features;
     }
 }

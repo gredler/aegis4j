@@ -55,21 +55,25 @@ public class AegisAgentTest {
 
     @Test
     public void testParseBlockList() {
+
         assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList(""));
         assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("   "));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("blahblah"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("foo=bar"));
-        assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "serialization", "unsafe", "scripting", "jshell"), toBlockList("unblock=incorrect"));
         assertEquals(Set.of("jndi", "rmi", "process", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization"));
         assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization,process"));
         assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("UNbloCk=SERIALIZATION,Process"));
         assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList(" unblock\t=    serialization      , process\t"));
-        assertEquals(Set.of("jndi", "rmi", "httpserver", "unsafe", "scripting", "jshell"), toBlockList("unblock=serialization,process,incorrect1,incorrect2"));
         assertEquals(Set.of(), toBlockList("unblock=jndi,rmi,process,httpserver,serialization,unsafe,scripting,jshell"));
         assertEquals(Set.of("jndi"), toBlockList("block=jndi"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block=jndi,rmi,process"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("block = jndi\t, rmi ,\nprocess"));
         assertEquals(Set.of("jndi", "rmi", "process"), toBlockList("BLOck = JNDI\t, rmi ,\nProcESs"));
+
+        assertThrowsIAE(() -> toBlockList("blahblah"), "ERROR: Invalid agent configuration string");
+        assertThrowsIAE(() -> toBlockList("foo=bar"), "ERROR: Unrecognized parameter name (should be one of 'block' or 'unblock'): foo");
+        assertThrowsIAE(() -> toBlockList("block=incorrect"), "ERROR: Unrecognized feature name: incorrect");
+        assertThrowsIAE(() -> toBlockList("unblock=incorrect"), "ERROR: Unrecognized feature name: incorrect");
+        assertThrowsIAE(() -> toBlockList("block=serialization,process,incorrect,jndi"), "ERROR: Unrecognized feature name: incorrect");
+        assertThrowsIAE(() -> toBlockList("unblock=serialization,process,incorrect,jndi"), "ERROR: Unrecognized feature name: incorrect");
     }
 
     @Test
@@ -296,6 +300,10 @@ public class AegisAgentTest {
 
     private static void assertThrowsIOE(Task task) {
         assertThrows(task, IOException.class, "Process execution blocked by aegis4j");
+    }
+
+    private static void assertThrowsIAE(Task task, String msg) {
+        assertThrows(task, IllegalArgumentException.class, msg);
     }
 
     private static void assertThrowsRE(Task task, String msg) {
