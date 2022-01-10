@@ -6,6 +6,7 @@ import static net.gredler.aegis4j.TestUtils.testLdap;
 
 import org.apache.log4j.receivers.db.JNDIConnectionSource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,13 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CVE_2019_17531 {
 
     @Test
-    public void test() throws Exception {
+    public void test() throws Throwable {
 
-        Task setup = () -> {
+        Executable setup = () -> {
             // only the LDAP server is needed
         };
 
-        Task trigger = () -> {
+        Executable trigger = () -> {
             ObjectMapper mapper = new ObjectMapper();
             String json = "{ \"property\": { \"@class\": \"org.apache.log4j.receivers.db.JNDIConnectionSource\", \"jndiLocation\": \"ldap://localhost:8181/dc=foo\" } }";
             JsonPayload payload = mapper.readValue(json, JsonPayload.class);

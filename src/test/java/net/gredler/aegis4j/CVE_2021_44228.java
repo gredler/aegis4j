@@ -15,6 +15,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 /**
  * Tests mitigation of CVE-2021-44228 (a.k.a. Log4Shell). During setup we simply configure log4j to
@@ -28,13 +29,13 @@ import org.junit.jupiter.api.Test;
 public class CVE_2021_44228 {
 
     @Test
-    public void test() throws Exception {
+    public void test() throws Throwable {
 
-        Task setup = () -> {
+        Executable setup = () -> {
             configureLog4J2();
         };
 
-        Task trigger = () -> {
+        Executable trigger = () -> {
             Logger logger = LogManager.getLogger();
             logger.info("${jndi:ldap://localhost:8181/dc=foo}");
         };

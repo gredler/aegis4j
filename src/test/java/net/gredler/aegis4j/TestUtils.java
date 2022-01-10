@@ -17,6 +17,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.junit.jupiter.api.function.Executable;
+
 import com.sun.tools.attach.VirtualMachine;
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -35,13 +37,13 @@ public final class TestUtils {
 
     private TestUtils() {}
 
-    public static void testLdap(Task setup, Task trigger, Class< ? > ldapPayload, boolean expectException) throws Exception {
+    public static void testLdap(Executable setup, Executable trigger, Class< ? > ldapPayload, boolean expectException) throws Throwable {
 
-        setup.run();
+        setup.execute();
         InMemoryDirectoryServer ldapServer = createLdapServer(8181, "dc=foo", ldapPayload);
         assertNull(System.getProperty(OWNED));
 
-        trigger.run();
+        trigger.execute();
         assertTrue(Boolean.valueOf(System.getProperty(OWNED)));
 
         System.clearProperty(OWNED);
@@ -50,7 +52,7 @@ public final class TestUtils {
         installAgent(null);
 
         try {
-            trigger.run();
+            trigger.execute();
             assertFalse(expectException);
             assertNull(System.getProperty(OWNED));
         } catch (Exception e) {

@@ -34,6 +34,7 @@ import javax.script.SimpleScriptContext;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.objenesis.SpringObjenesis;
 
 import com.sun.net.httpserver.HttpServer;
@@ -290,30 +291,30 @@ public class AegisAgentTest {
         assertInstanceOf(LocalDate.class, so.newInstance(LocalDate.class));
     }
 
-    private static void assertThrowsNICE(Task task) {
+    private static void assertThrowsNICE(Executable task) {
         assertThrows(task, NoInitialContextException.class, "JNDI context creation blocked by aegis4j");
     }
 
-    private static void assertThrowsSNFE(Task task) {
+    private static void assertThrowsSNFE(Executable task) {
         assertThrows(task, StubNotFoundException.class, "RMI registry creation blocked by aegis4j");
     }
 
-    private static void assertThrowsIOE(Task task) {
+    private static void assertThrowsIOE(Executable task) {
         assertThrows(task, IOException.class, "Process execution blocked by aegis4j");
     }
 
-    private static void assertThrowsIAE(Task task, String msg) {
+    private static void assertThrowsIAE(Executable task, String msg) {
         assertThrows(task, IllegalArgumentException.class, msg);
     }
 
-    private static void assertThrowsRE(Task task, String msg) {
+    private static void assertThrowsRE(Executable task, String msg) {
         assertThrows(task, RuntimeException.class, msg);
     }
 
-    private static void assertThrows(Task task, Class< ? extends Throwable > type, String msg) {
+    private static void assertThrows(Executable task, Class< ? extends Throwable > type, String msg) {
         Throwable root;
         try {
-            task.run();
+            task.execute();
             root = null;
         } catch (Throwable t) {
             root = getRootCause(t);
