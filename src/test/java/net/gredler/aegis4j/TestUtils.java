@@ -85,11 +85,13 @@ public final class TestUtils {
         return directoryServer;
     }
 
-    private static String createAgentJar(Class< ? > clazz) throws IOException {
+    public static String createAgentJar() throws IOException {
+        Class< ? > clazz = AegisAgent.class;
         Path jar = Files.createTempFile("aegis4j-", ".jar");
         jar.toFile().deleteOnExit();
         Manifest manifest = new Manifest();
         manifest.getMainAttributes().putValue("Manifest-Version", "1.0");
+        manifest.getMainAttributes().putValue("Main-Class", clazz.getName());
         manifest.getMainAttributes().putValue("Agent-Class", clazz.getName());
         manifest.getMainAttributes().putValue("Premain-Class", clazz.getName());
         manifest.getMainAttributes().putValue("Can-Redefine-Classes", "true");
@@ -125,7 +127,7 @@ public final class TestUtils {
     public static void installAgent(String options) throws Exception {
         long pid = ProcessHandle.current().pid();
         VirtualMachine jvm = VirtualMachine.attach(String.valueOf(pid));
-        jvm.loadAgent(createAgentJar(AegisAgent.class), options);
+        jvm.loadAgent(createAgentJar(), options);
         jvm.detach();
     }
 }
