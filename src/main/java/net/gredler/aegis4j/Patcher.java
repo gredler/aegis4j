@@ -50,6 +50,7 @@ public final class Patcher implements ClassFileTransformer {
      */
     public static void start(Instrumentation instr, Set< String > block) {
 
+        System.out.println("Aegis4j patching starting");
         Patcher patcher = new Patcher(block);
         instr.addTransformer(patcher, true);
 
@@ -64,6 +65,7 @@ public final class Patcher implements ClassFileTransformer {
         }
 
         System.setProperty("aegis4j.blocked.features", String.join(",", block));
+        System.out.println("Aegis4j patching finished");
     }
 
     @Override
