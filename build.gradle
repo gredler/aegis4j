@@ -9,7 +9,7 @@ plugins {
 
 group = 'net.gredler'
 archivesBaseName = 'aegis4j'
-version = '1.0'
+version = '1.1'
 
 repositories {
     mavenCentral()
@@ -46,7 +46,7 @@ java {
 
 test {
     useJUnitPlatform()
-    systemProperty 'jdk.attach.allowAttachSelf', 'true'
+    systemProperty 'jdk.attach.allowAttachSelf', 'true' // tests attach agent to local VM
     forkEvery 1 // tests cannot undo class modifications to clean up after themselves
     testLogging {
         events 'passed', 'skipped', 'failed'

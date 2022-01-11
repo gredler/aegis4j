@@ -26,21 +26,21 @@ Java features:
 
 ### Download
 
-The aegis4j JAR is available in the [Maven Central](https://repo1.maven.org/maven2/net/gredler/aegis4j/1.0/) repository.
+The aegis4j JAR is available in the [Maven Central](https://repo1.maven.org/maven2/net/gredler/aegis4j/1.1/) repository.
 
 ### Usage: Attach at Application Startup
 
 To attach at application startup, blocking all features listed above, add the agent to your java command line:
 
-`java -cp <classpath> -javaagent:aegis4j-1.0.jar <main-class> <arguments>`
+`java -cp <classpath> -javaagent:aegis4j-1.1.jar <main-class> <arguments>`
 
 Or, if you want to configure the specific features to block:
 
-`java -cp <classpath> -javaagent:aegis4j-1.0.jar=block=<features> <main-class> <arguments>`
+`java -cp <classpath> -javaagent:aegis4j-1.1.jar=block=<features> <main-class> <arguments>`
 
 Or, if you want to use the default block list, but unblock specific features:
 
-`java -cp <classpath> -javaagent:aegis4j-1.0.jar=unblock=<features> <main-class> <arguments>`
+`java -cp <classpath> -javaagent:aegis4j-1.1.jar=unblock=<features> <main-class> <arguments>`
 
 Feature lists should be comma-delimited (e.g. `jndi,rmi,unsafe`).
 
@@ -48,15 +48,15 @@ Feature lists should be comma-delimited (e.g. `jndi,rmi,unsafe`).
 
 To attach to a running application, blocking all features listed above, run the following command:
 
-`java -jar aegis4j-1.0.jar <application-pid>`
+`java -jar aegis4j-1.1.jar <application-pid>`
 
 Or, if you want to configure the specific features to block:
 
-`java -jar aegis4j-1.0.jar <application-pid> block=<features>`
+`java -jar aegis4j-1.1.jar <application-pid> block=<features>`
 
 Or, if you want to use the default block list, but unblock specific features:
 
-`java -jar aegis4j-1.0.jar <application-pid> unblock=<features>`
+`java -jar aegis4j-1.1.jar <application-pid> unblock=<features>`
 
 Feature lists should be comma-delimited (e.g. `jndi,rmi,unsafe`).
 
