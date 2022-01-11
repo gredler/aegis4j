@@ -72,7 +72,7 @@ The list of Java features blocked by aegis4j is available via the `aegis4j.block
 can be queried at runtime via Java code, JMX, APM agents, etc.
 
 When an attempt is made to use a blocked feature, the type of exception thrown varies according to context, but the exception
-message always uses the format `"<feature> blocked by aegis4j"`.
+message always uses the format `"<action> blocked by aegis4j"`.
 
 ### Building
 
@@ -92,7 +92,10 @@ locally. Tests are also run in individual VM instances, so that the class modifi
 tests.
 
 Ideally aegis4j could block all reflection as well, since it's often used in exploit chains. However, reflection is used *everywhere*,
-including the JDK lambda internals, Spring Boot, JUnit, and many other libraries and frameworks.
+including the JDK lambda internals, Spring Boot, JUnit, and many other libraries and frameworks. The best way to mitigate the dangers
+of reflection is to upgrade to JDK 17 or later, where many of the internal platform classes have been made inaccessible via reflection
+(see [JEP 403](https://openjdk.java.net/jeps/403), or the [full list](https://cr.openjdk.java.net/~mr/jigsaw/jdk8-packages-strongly-encapsulated)
+of packages that were locked down between JDK 8 and JDK 17).
 
 ### Related Work
 
